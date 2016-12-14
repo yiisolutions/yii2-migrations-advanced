@@ -28,23 +28,68 @@ class RbacMigrateController extends BaseMigrateController
         'drop_role' => '@yiisolutions/migrations/../resources/views/rbac/dropRoleMigration.php',
     ];
 
+    /**
+     * @var string role or permission description
+     */
+    public $description;
+
+    /**
+     * @var string rule class name for role
+     */
+    public $ruleName;
+
+    /**
+     * @inheritdoc
+     */
+    public function options($actionID)
+    {
+        return array_merge(
+            parent::options($actionID),
+            ['migrationTable', 'db'], // global for all actions
+            $actionID === 'create'
+                ? ['templateFile', 'description', 'ruleName']
+                : []
+        );
+    }
+
     protected function generateMigrationSourceCode($params)
     {
         $name = $params['name'];
 
         $templateFile = $this->templateFile;
         $roleName = null;
+        $options = [];
         if (preg_match('/^create_(.+)_role$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['create_role'];
             $roleName = mb_strtolower($matches[1], Yii::$app->charset);
+
+            if (!empty($this->description)) {
+                $options['description'] = $this->description;
+            }
+
+            if (!empty($this->ruleName)) {
+                $options['ruleName'] = $this->ruleName;
+            }
         } elseif (preg_match('/^drop_(.+)_role$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['drop_role'];
             $roleName = mb_strtolower($matches[1], Yii::$app->charset);
+
+            $authManager = Yii::$app->getAuthManager();
+            $role = $authManager->getRole($roleName);
+            if ($role) {
+                if (!empty($role->description)) {
+                    $options['description'] = $role->description;
+                }
+
+                if (!empty($role->ruleName)) {
+                    $options['ruleName'] = $role->ruleName;
+                }
+            }
         }
 
         return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
             'roleName' => $roleName,
-            'options' => [],
+            'options' => $options,
         ]));
     }
 }
