@@ -34,14 +34,14 @@ class <?= $className ?> extends RbacMigration
      */
     public function down()
     {
-    <?php if (empty($options)): ?>
+<?php if (empty($options)): ?>
         $this->createRole('<?= $roleName ?>');
-    <?php else: ?>
-        $this->createRole('<?= $roleName ?>, [
-        <?php foreach ($options as $key => $value): ?>
+<?php else: ?>
+        $this->createRole('<?= $roleName ?>', [
+<?php foreach ($options as $key => $value): ?>
             '<?= $key ?>' => '<?= $value ?>',
-        <?php endforeach; ?>
+<?php endforeach; ?>
         ]);
-    <?php endif ?>
+<?php endif ?>
     }
 }
