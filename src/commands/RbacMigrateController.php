@@ -1,6 +1,6 @@
 <?php
 
-namespace commands;
+namespace yiisolutions\migrations\commands;
 
 use Yii;
 use yii\console\controllers\MigrateController;
