@@ -64,6 +64,40 @@ class RbacMigration extends Migration
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
+    public function createPermission($name, $options)
+    {
+        echo "    > create permission $name ...";
+        $time = microtime(true);
+        $authManager = $this->getAuthManager();
+
+        $permission = $authManager->createPermission($name);
+
+        if (isset($options['description'])) {
+            $permission->description = $options['description'];
+        }
+
+        if (isset($options['ruleName'])) {
+            $permission->ruleName = $options['ruleName'];
+        }
+
+        $authManager->add($permission);
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+
+    public function dropPermission($name)
+    {
+        echo "    > drop permission $name ...";
+        $time = microtime(true);
+        $authManager = $this->getAuthManager();
+
+        $permission = $authManager->getPermission($name);
+        if (!$permission) {
+            throw new Exception("Failed to drop permission '{$name}'. Permission not found.");
+        }
+        $authManager->remove($permission);
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+
     /**
      * @throws InvalidConfigException
      * @return DbManager

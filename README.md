@@ -58,3 +58,6 @@ For `rbac-migrate/create` command available templates:
 
 * `create_[name]_role` - create new role migration (options: description, ruleName)
 * `drop_[name]_role` - drop exist role migration
+* `create_[name]_permission` - create new permission migration (options: description, ruleName)
+* `drop_[name]_permission` - drop exist permission migration.
+
