@@ -3,9 +3,9 @@
 namespace yiisolutions\migrations\commands;
 
 use Yii;
-use yii\console\controllers\MigrateController;
+use yii\console\controllers\MigrateController as BaseMigrateController;
 
-class RbacMigrateController extends MigrateController
+class RbacMigrateController extends BaseMigrateController
 {
     public $migrationTable = '{{%rbac_migration}}';
     public $migrationPath = '@app/rbac';
