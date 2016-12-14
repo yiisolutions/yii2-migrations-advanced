@@ -35,3 +35,26 @@ return [
 ];
 
 ```
+
+### RBAC migrations
+
+Sometimes you need to create a migration for RBAC. Use RbacMigrateController for this:
+  
+```php
+<?php
+
+return [
+    // ...
+    'controllerMap' => [
+        'rbac-migrate' => [
+            'class' => 'yiisolutions\migrations\commands\RbacMigrateController',
+        ],    
+    ],
+    // ...
+];
+```
+
+For `rbac-migrate/create` command available templates:
+
+* `create_[name]_role` - create new role migration (options: description, ruleName)
+* `drop_[name]_role` - drop exist role migration
