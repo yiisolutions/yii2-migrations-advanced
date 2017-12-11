@@ -3,7 +3,7 @@
 namespace yiisolutions\migrations\db;
 
 use Yii;
-use yii\base\Exception;
+use yiisolutions\migrations\exceptions\RbacMigrationException;
 use yii\base\InvalidConfigException;
 use yii\rbac\DbManager;
 
@@ -12,17 +12,9 @@ class RbacMigration extends Migration
     /**
      * Builds and executes a SQL statement for creating a new RBAC role.
      *
-     * The columns in the new  table should be specified as name-definition pairs (e.g. 'name' => 'string'),
-     * where name stands for a column name which will be properly quoted by the method, and definition
-     * stands for the column type which can contain an abstract DB type.
-     *
-     * The [[QueryBuilder::getColumnType()]] method will be invoked to convert any abstract type into a physical one.
-     *
-     * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
-     * put into the generated SQL.
-     *
      * @param string $name the name of the role to be created.
      * @param array $options the role options (name => value) in the new role.
+     * @throws InvalidConfigException
      */
     public function createRole($name, array $options = [])
     {
@@ -47,8 +39,8 @@ class RbacMigration extends Migration
      * Builds and executes a SQL statement for dropping a RBAC role.
      *
      * @param string $name the role to be dropped.
-     *
-     * @throws Exception
+     * @throws RbacMigrationException
+     * @throws InvalidConfigException
      */
     public function dropRole($name)
     {
@@ -58,12 +50,19 @@ class RbacMigration extends Migration
 
         $role = $authManager->getRole($name);
         if (!$role) {
-            throw new Exception("Failed to drop role '{$name}'. Role not found.");
+            throw new RbacMigrationException("Failed to drop role '{$name}'. Role not found.");
         }
         $authManager->remove($role);
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
+    /**
+     * Builds and executes a SQL statement for creating a new RBAC permission.
+     *
+     * @param string $name the name of the permission to be created.
+     * @param array $options the permission options (name => value) in the new permission.
+     * @throws InvalidConfigException
+     */
     public function createPermission($name, $options)
     {
         echo "    > create permission $name ...";
@@ -84,6 +83,13 @@ class RbacMigration extends Migration
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
+    /**
+     * Builds and executes a SQL statement for dropping a RBAC permission.
+     *
+     * @param string $name the permission to be dropped.
+     * @throws InvalidConfigException
+     * @throws RbacMigrationException
+     */
     public function dropPermission($name)
     {
         echo "    > drop permission $name ...";
@@ -92,15 +98,17 @@ class RbacMigration extends Migration
 
         $permission = $authManager->getPermission($name);
         if (!$permission) {
-            throw new Exception("Failed to drop permission '{$name}'. Permission not found.");
+            throw new RbacMigrationException("Failed to drop permission '{$name}'. Permission not found.");
         }
         $authManager->remove($permission);
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
     /**
-     * @throws InvalidConfigException
+     * Access to auth manager.
+     *
      * @return DbManager
+     * @throws InvalidConfigException
      */
     protected function getAuthManager()
     {

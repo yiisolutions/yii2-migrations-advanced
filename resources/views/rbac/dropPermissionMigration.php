@@ -1,6 +1,7 @@
 <?php
 /**
- * This view is used by console/controllers/MigrateController.php
+ * This view is used by console/controllers/MigrateController.php.
+ *
  * The following variables are available in this view:
  */
 /* @var $className string the new migration class name without namespace */
@@ -24,7 +25,7 @@ class <?= $className ?> extends RbacMigration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         $this->dropPermission('<?= $permissionName ?>');
     }
@@ -32,7 +33,7 @@ class <?= $className ?> extends RbacMigration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
 <?php if (empty($options)): ?>
         $this->createPermission('<?= $permissionName ?>');

@@ -1,6 +1,7 @@
 <?php
 /**
- * This view is used by console/controllers/MigrateController.php
+ * This view is used by console/controllers/MigrateController.php.
+ *
  * The following variables are available in this view:
  */
 /* @var $className string the new migration class name without namespace */
@@ -16,14 +17,14 @@ use yiisolutions\migrations\db\RbacMigration;
 
 class <?= $className ?> extends RbacMigration
 {
-    public function up()
+    public function safeUp()
     {
         $authManager = $this->getAuthManager();
 
 
     }
 
-    public function down()
+    public function safeDown()
     {
         $authManager = $this->getAuthManager();
 
@@ -33,14 +34,14 @@ class <?= $className ?> extends RbacMigration
     }
 
     /*
-    // Use safeUp/safeDown to run migration code within a transaction
-    public function safeUp()
+    // Use up()/down() to run migration code without a transaction.
+    public function up()
     {
         $authManager = $this->getAuthManager();
 
     }
 
-    public function safeDown()
+    public function down()
     {
         $authManager = $this->getAuthManager();
 

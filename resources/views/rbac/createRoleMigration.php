@@ -1,6 +1,7 @@
 <?php
 /**
- * This view is used by src/commands/RbacMigrateController.php
+ * This view is used by src/commands/RbacMigrateController.php.
+ *
  * The following variables are available in this view:
  */
 /* @var $className string the new migration class name without namespace */
@@ -24,7 +25,7 @@ class <?= $className ?> extends RbacMigration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
 <?php if (empty($options)): ?>
         $this->createRole('<?= $roleName ?>');
@@ -40,7 +41,7 @@ class <?= $className ?> extends RbacMigration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         $this->dropRole('<?= $roleName ?>');
     }
